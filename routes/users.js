@@ -42,13 +42,37 @@ router.post("/", (req, res) => {
     email: req.query.email,
     DOB: req.query.DOB,
   });
-  res.send(`${req.query.firstName} user has successfully been added!`);
+  res.send(`${req.query.email} has successfully been added!`);
 });
 
 // PUT request: Update the details of a user by email ID
 router.put("/:email", (req, res) => {
-  // Copy the code here
-  res.send("Yet to be implemented"); //This line is to be replaced with actual return value
+  const email = req.params.email;
+  let filtered_users = users.filter((user) => user.email === email);
+
+  if (filtered_users.length > 0) {
+    let filtered_user = filtered_users[0];
+
+    let firstName = req.query.firstName;
+    let lastName = req.query.lastName;
+    let DOB = req.query.DOB;
+
+    if (firstName) {
+      filtered_user.firstName = firstName;
+    }
+    if (lastName) {
+      filtered_user.lastName = lastName;
+    }
+    if (DOB) {
+      filtered_user.DOB = DOB;
+    }
+
+    users = users.filter((user) => user.email != email);
+    users.push(filtered_user);
+    res.send(`${email} has successfully been updated!`);
+  } else {
+    res.send("Unable to find user!");
+  }
 });
 
 // DELETE request: Delete a user by email ID
